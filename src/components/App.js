@@ -51,7 +51,7 @@ class App extends Component {
 
           <Compose />
           {posts.map(post=>(
-            <Post key={post.id} text={post.text} date={post.date}/>
+            <Post key={post.id} id={post.id} text={post.text} date={post.date} updatePostFn={this.updatePost}/>
           )
           )}
         </section>
