@@ -15,8 +15,16 @@ export default class Search extends Component {
     };
   }
 
-  updateText( text ) {
-    this.setState({ text });
+  onChange = e => {
+    
+      this.setState({ text: e.target.value}, () => {
+        if(this.state.text !== ""){
+          this.props.searchPostFn(this.state.text)
+        }else{
+          this.props.getAllPosts()
+        }
+      })
+    
   }
 
   
@@ -26,9 +34,9 @@ export default class Search extends Component {
       <section className="Search__parent">
 
         <div className="Search__content">
-          <input placeholder="Search Your Feed" onChange={( e ) => this.updateText( e.target.value )}/>
+          <input placeholder="Search Your Feed" onChange={this.onChange}/>
 
-          <SearchIcon id="Search__icon" onClick={() => this.props.searchPostFn(this.state.text, this.props.posts)}/>
+          <SearchIcon id="Search__icon" />
         </div>
         
       </section>
