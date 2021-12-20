@@ -18,12 +18,18 @@ class App extends Component {
     this.updatePost = this.updatePost.bind( this );
     this.deletePost = this.deletePost.bind( this );
     this.createPost = this.createPost.bind( this );
+    this.searchPost = this.searchPost.bind( this );
+  }
+
+  getPosts() {
+    axios.get('https://practiceapi.devmountain.com/api/posts').then((res) =>{
+      this.setState({posts: res.data})
+      console.log(res.data);
+    })
   }
   
   componentDidMount() {
-    axios.get('https://practiceapi.devmountain.com/api/posts').then((res) =>{
-      this.setState({posts: res.data})
-    })
+    this.getPosts()
   }
 
   updatePost(id, text) {
@@ -32,12 +38,23 @@ class App extends Component {
     })
   }
 
-  deletePost() {
-
+  deletePost(id) {
+    axios.delete(`https://practiceapi.devmountain.com/api/posts?id=${id}`).then((res)=> {
+      this.setState({posts: res.data})
+    })
   }
 
-  createPost() {
+  createPost(text) {
+    axios.post(`https://practiceapi.devmountain.com/api/posts`, {text}).then((res)=> {
+      this.setState({posts:res.data})
+    })
+  }
 
+  searchPost(text, posts) {
+    console.log(text);
+    let newPostsArr = posts.filter(post => post.text.includes(text));
+    console.log(newPostsArr);
+    this.setState({posts: newPostsArr})
   }
 
   render() {
@@ -45,13 +62,20 @@ class App extends Component {
 
     return (
       <div className="App__parent">
-        <Header />
+        <Header searchPostFn={this.searchPost} posts={posts} getPosts={this.getPosts}/>
 
         <section className="App__content">
 
-          <Compose />
-          {posts.map(post=>(
-            <Post key={post.id} id={post.id} text={post.text} date={post.date} updatePostFn={this.updatePost}/>
+          <Compose createPostFn={this.createPost}/>
+          {
+          posts.map(post=>(
+            <Post key={post.id} 
+            id={post.id} 
+            text={post.text} 
+            date={post.date} 
+            updatePostFn={this.updatePost}
+            deletePostFn={this.deletePost}
+            />
           )
           )}
         </section>
